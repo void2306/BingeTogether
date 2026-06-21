@@ -8,10 +8,11 @@ import com.sakshi.bingetogetherbackend.model.Room;
 import com.sakshi.bingetogetherbackend.service.RoomService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PutMapping;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 public class RoomController {
 
     private final RoomService roomService;
