@@ -1,9 +1,10 @@
 package com.sakshi.bingetogetherbackend.model;
 
 import jakarta.persistence.Embeddable;
+import java.io.Serializable;
 
 @Embeddable
-public class RoomMemberId {
+public class RoomMemberId implements Serializable {
 
     private Long roomId;
     private Long userId;

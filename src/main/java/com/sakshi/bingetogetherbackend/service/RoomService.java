@@ -28,8 +28,14 @@ public class RoomService {
         this.roomMemberRepository = roomMemberRepository;
         this.chatMessageRepository = chatMessageRepository;
     }
-
     public Room createRoom(CreateRoomRequest request) {
+
+        System.out.println("================================");
+        System.out.println("ROOM NAME = " + request.getRoomName());
+        System.out.println("ROOM TYPE = " + request.getRoomType());
+        System.out.println("MOVIE LINK = " + request.getMovieLink());
+        System.out.println("USER ID = " + request.getUserId());
+        System.out.println("================================");
 
         Room room = new Room();
 
@@ -47,11 +53,16 @@ public class RoomService {
 
         Room savedRoom = roomRepository.save(room);
 
+        System.out.println("Saved Room ID = " + savedRoom.getId());
+
         RoomMemberId memberId =
                 new RoomMemberId(
                         savedRoom.getId(),
                         request.getUserId()
                 );
+
+        System.out.println("MemberId Room ID = " + memberId.getRoomId());
+        System.out.println("MemberId User ID = " + memberId.getUserId());
 
         RoomMember host = new RoomMember();
         host.setId(memberId);
