@@ -1,18 +1,20 @@
 package com.sakshi.bingetogetherbackend.controller;
+
 import com.sakshi.bingetogetherbackend.dto.*;
 import com.sakshi.bingetogetherbackend.model.ChatMessage;
 import com.sakshi.bingetogetherbackend.model.RoomMember;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import com.sakshi.bingetogetherbackend.model.Room;
 import com.sakshi.bingetogetherbackend.service.RoomService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.CrossOrigin;
+
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:5176"}, allowCredentials = "true")
 public class RoomController {
 
     private final RoomService roomService;
@@ -21,57 +23,107 @@ public class RoomController {
         this.roomService = roomService;
     }
 
+    // ==========================================
+    // ROOM MANAGEMENT ENDPOINTS
+    // ==========================================
+
+    /**
+     * Matches: POST http://localhost:8080/room/create
+     */
     @PostMapping("/room/create")
-    public Room createRoom(@RequestBody CreateRoomRequest request) {
-        return roomService.createRoom(request);
+    public ResponseEntity<Room> createRoom(@RequestBody CreateRoomRequest request) {
+        System.out.println("[API] Creating room space for user ID: " + request.getUserId());
+        Room savedRoom = roomService.createRoom(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedRoom);
     }
 
+    /**
+     * Matches: POST http://localhost:8080/room/join
+     */
     @PostMapping("/room/join")
-    public String joinRoom(@RequestBody JoinRoomRequest request) {
-        return roomService.joinRoom(
-                request.getRoomCode(),
-                request.getUserId()
-        );
+    public ResponseEntity<?> joinRoom(@RequestBody JoinRoomRequest request) {
+        Map<String, Object> responseBody = new HashMap<>();
+        try {
+            System.out.println("[API] User ID " + request.getUserId() + " joining room: " + request.getRoomCode());
+            String serviceResult = roomService.joinRoom(request.getRoomCode(), request.getUserId());
+
+            responseBody.put("success", true);
+            responseBody.put("message", serviceResult);
+            responseBody.put("roomCode", request.getRoomCode());
+
+            return ResponseEntity.ok(responseBody);
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseBody.put("success", false);
+            responseBody.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+        }
     }
+
+    /**
+     * Matches: GET http://localhost:8080/room/{roomCode}
+     */
     @GetMapping("/room/{roomCode}")
-    public Room getRoom(@PathVariable String roomCode) {
-
-        return roomService.getRoomByCode(roomCode);
+    public ResponseEntity<Room> getRoom(@PathVariable String roomCode) {
+        return ResponseEntity.ok(roomService.getRoomByCode(roomCode));
     }
+
+    /**
+     * Matches: GET http://localhost:8080/room/{roomCode}/members
+     */
     @GetMapping("/room/{roomCode}/members")
-    public List<RoomMember> getRoomMembers(
-            @PathVariable String roomCode) {
-
-        return roomService.getRoomMembers(roomCode);
+    public ResponseEntity<List<RoomMember>> getRoomMembers(@PathVariable String roomCode) {
+        return ResponseEntity.ok(roomService.getRoomMembers(roomCode));
     }
+
+    /**
+     * Matches: PUT http://localhost:8080/room/nickname
+     */
     @PutMapping("/room/nickname")
-    public String updateNickname(
-            @RequestBody UpdateNicknameRequest request) {
-
-        return roomService.updateNickname(request);
+    public ResponseEntity<String> updateNickname(@RequestBody UpdateNicknameRequest request) {
+        String result = roomService.updateNickname(request);
+        return ResponseEntity.ok("{\"message\": \"" + result + "\"}");
     }
+
+    /**
+     * Matches: DELETE http://localhost:8080/room/leave
+     */
     @DeleteMapping("/room/leave")
-    public String leaveRoom(
-            @RequestBody LeaveRoomRequest request) {
-
-        return roomService.leaveRoom(request);
+    public ResponseEntity<String> leaveRoom(@RequestBody LeaveRoomRequest request) {
+        String result = roomService.leaveRoom(request);
+        return ResponseEntity.ok("{\"message\": \"" + result + "\"}");
     }
+
+    // ==========================================
+    // CHAT BACKPLANE ENDPOINTS
+    // ==========================================
+
+    /**
+     * Matches: POST http://localhost:8080/chat/send
+     */
     @PostMapping("/chat/send")
-    public String sendMessage(
-            @RequestBody SendMessageRequest request) {
-
-        return roomService.sendMessage(request);
+    public ResponseEntity<String> sendMessage(@RequestBody SendMessageRequest request) {
+        String result = roomService.sendMessage(request);
+        return ResponseEntity.ok("{\"message\": \"" + result + "\"}");
     }
+
+    /**
+     * Matches: GET http://localhost:8080/chat/{roomId}
+     */
     @GetMapping("/chat/{roomId}")
-    public List<ChatMessage> getMessages(
-            @PathVariable Long roomId) {
-
-        return roomService.getMessages(roomId);
+    public ResponseEntity<List<ChatMessage>> getMessages(@PathVariable Long roomId) {
+        return ResponseEntity.ok(roomService.getMessages(roomId));
     }
-    @GetMapping("/user/{userId}/rooms")
-    public List<Room> getUserRooms(
-            @PathVariable Long userId) {
 
-        return roomService.getUserRooms(userId);
+    // ==========================================
+    // USER PERSISTENCE ENDPOINTS
+    // ==========================================
+
+    /**
+     * Matches: GET http://localhost:8080/user/{userId}/rooms
+     */
+    @GetMapping("/user/{userId}/rooms")
+    public ResponseEntity<List<Room>> getUserRooms(@PathVariable Long userId) {
+        return ResponseEntity.ok(roomService.getUserRooms(userId));
     }
 }

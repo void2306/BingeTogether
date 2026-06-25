@@ -1,26 +1,40 @@
 package com.sakshi.bingetogetherbackend.model;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "room_member")
 public class RoomMember {
 
+    // 1. Embedded Composite ID wrapper containing (roomId, userId)
     @EmbeddedId
     private RoomMemberId id;
 
-    private String role; // HOST or MEMBER
+    @Column(name = "role")
+    private String role;
 
+    @Column(name = "nickname")
     private String nickname;
 
-    public RoomMember() {
-    }
+    // 2. Maps the connection back to the Room table for Hibernate joins
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("roomId") // Links directly to the roomId inside RoomMemberId
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
 
-    public RoomMember(RoomMemberId id, String role, String nickname) {
+    // Default Constructor required by JPA
+    public RoomMember() {}
+
+    public RoomMember(RoomMemberId id, String role, String nickname, Room room) {
         this.id = id;
         this.role = role;
         this.nickname = nickname;
+        this.room = room;
     }
+
+    // ==========================================
+    // GETTERS AND SETTERS (The missing methods!)
+    // ==========================================
 
     public RoomMemberId getId() {
         return id;
@@ -44,5 +58,13 @@ public class RoomMember {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 }

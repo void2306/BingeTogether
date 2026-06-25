@@ -3,7 +3,6 @@ package com.sakshi.bingetogetherbackend.service;
 import com.sakshi.bingetogetherbackend.model.User;
 import com.sakshi.bingetogetherbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -33,17 +32,13 @@ public class UserService {
     }
 
     public User updateUser(Long id, User updatedUser) {
-
         User existingUser = userRepository.findById(id).orElse(null);
-
         if (existingUser == null) {
             return null;
         }
-
         existingUser.setUsername(updatedUser.getUsername());
         existingUser.setEmail(updatedUser.getEmail());
         existingUser.setPassword(updatedUser.getPassword());
-
         return userRepository.save(existingUser);
     }
 
@@ -51,17 +46,18 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    // 🔥 FIXED LOGIN (important part)
+    /**
+     * FIXED LOGIN ENGINE
+     * Returns the actual user database row if credentials match perfectly,
+     * or returns explicit null so the controller layer can fire a clean 401 error.
+     */
     public User login(String email, String password) {
+        Optional<User> user = userRepository.findByEmailAndPassword(email, password);
 
-        Optional<User> user =
-                userRepository.findByEmailAndPassword(email, password);
-
-        // IMPORTANT: avoid returning null (frontend crashes on JSON parse)
+        // FIX: Returning explicit null forces the Controller's guard condition to intercept
         if (user.isEmpty()) {
-            return new User(); // safe empty object instead of null
+            return null;
         }
-
         return user.get();
     }
 }
