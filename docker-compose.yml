@@ -6,9 +6,7 @@ services:
     ports:
       - "80:8080"
     environment:
-      # Replace 'your-aws-db-endpoint' with your actual AWS RDS endpoint
-      # Replace 'bingetogether' with your database name if it's different
-      - SPRING_DATASOURCE_URL=jdbc:mysql://your-aws-db-endpoint:3306/bingetogether?allowPublicKeyRetrieval=true&useSSL=false
-      # Replace these with your AWS database credentials
-      - SPRING_DATASOURCE_USERNAME=admin
+      # AWS RDS PostgreSQL Configuration
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://bingetogether.cmb6cm6gm086.us-east-1.rds.amazonaws.com:5432/bingeTogether?ssl=true&sslmode=require
+      - SPRING_DATASOURCE_USERNAME=Sakshi
       - SPRING_DATASOURCE_PASSWORD=your_aws_db_password
