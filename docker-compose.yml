@@ -6,27 +6,9 @@ services:
     ports:
       - "80:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/bingetogether?allowPublicKeyRetrieval=true&useSSL=false
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=Sakshi@24
-    depends_on:
-      db:
-        condition: service_healthy
-
-  db:
-    image: mysql:8.0
-    ports:
-      - "3307:3306" # Mapped to 3307 on host to avoid conflict if you have local MySQL running
-    environment:
-      - MYSQL_DATABASE=bingetogether
-      - MYSQL_ROOT_PASSWORD=Sakshi@24
-    volumes:
-      - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  db_data:
+      # Replace 'your-aws-db-endpoint' with your actual AWS RDS endpoint
+      # Replace 'bingetogether' with your database name if it's different
+      - SPRING_DATASOURCE_URL=jdbc:mysql://your-aws-db-endpoint:3306/bingetogether?allowPublicKeyRetrieval=true&useSSL=false
+      # Replace these with your AWS database credentials
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=your_aws_db_password
