@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth") // 🚨 Public prefix mapping gate matching SecurityConfig
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174", "http://localhost:5175" , "http://localhost:5176"}, allowCredentials = "true")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
 
     // 🌟 Thread-safe, immutable field configurations

@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:5176"}, allowCredentials = "true")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class RoomController {
 
     private final RoomService roomService;
