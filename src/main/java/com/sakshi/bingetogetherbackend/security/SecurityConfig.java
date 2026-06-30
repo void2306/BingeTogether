@@ -27,7 +27,14 @@ public class SecurityConfig {
                 // 2. Enable clean cross-origin resource sharing properties matching your front-end ports
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:5176"));
+                    // 🌐 Added "http://127.0.0.1:5174" patterns to ensure your browser testing is fully whitelisted
+                    config.setAllowedOrigins(List.of(
+                            "http://localhost:5173",
+                            "http://localhost:5174",
+                            "http://localhost:5175",
+                            "http://localhost:5176",
+                            "http://127.0.0.1:5174"
+                    ));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setAllowCredentials(true);
@@ -36,8 +43,8 @@ public class SecurityConfig {
 
                 // 3. Define explicit endpoint access permissions
                 .authorizeHttpRequests(auth -> auth
-                        // 🔥 CRITICAL SAFETY GATES: Allow open access to your login, registration, and WebSocket handshake endpoint paths!
-                        .requestMatchers("/auth/**", "/room/create", "/ws-binge/**", "/error").permitAll()
+                        // 🔑 Added "/ws/**" to perfectly match your frontend endpoint destination path!
+                        .requestMatchers("/auth/**", "/room/create", "/ws/**", "/ws-binge/**", "/error").permitAll()
                         // Any other private operational data endpoint will strictly require token authorization verification
                         .anyRequest().authenticated()
                 )

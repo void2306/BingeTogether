@@ -1,41 +1,13 @@
-//package com.sakshi.bingetogetherbackend.model;
-//
-//public class User {
-//
-//    private String username;
-//    private String email;
-//
-//    public User() {
-//    }
-//
-//    public User(String username, String email) {
-//        this.username = username;
-//        this.email = email;
-//    }
-//
-//    public String getUsername() {
-//        return username;
-//    }
-//
-//    public void setUsername(String username) {
-//        this.username = username;
-//    }
-//
-//    public String getEmail() {
-//        return email;
-//    }
-//
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
-//}
 package com.sakshi.bingetogetherbackend.model;
+
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table; // 🔑 Added import for table customization
 
 @Entity
+@Table(name = "users") // 🔑 Forces PostgreSQL to use 'users' so it doesn't crash on the keyword 'User'
 public class User {
 
     @Id
@@ -49,11 +21,7 @@ public class User {
     public User() {
     }
 
-    public User(Long id,
-                String username,
-                String email,
-                String password) {
-
+    public User(Long id, String username, String email, String password) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -80,7 +48,10 @@ public class User {
         return email;
     }
 
-    public void setEmail(String email) {this.email = email;}
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getPassword() {
         return password;
     }
