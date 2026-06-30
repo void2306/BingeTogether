@@ -27,13 +27,15 @@ public class SecurityConfig {
                 // 2. Enable clean cross-origin resource sharing properties matching your front-end ports
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    // 🌐 Added "http://127.0.0.1:5174" patterns to ensure your browser testing is fully whitelisted
+                    // 🌐 Added production Vercel deployment URL along with local ports to pass browser checks!
                     config.setAllowedOrigins(List.of(
+                            "https://bingetogether.vercel.app",
                             "http://localhost:5173",
                             "http://localhost:5174",
                             "http://localhost:5175",
                             "http://localhost:5176",
-                            "http://127.0.0.1:5174"
+                            "http://127.0.0.1:5174",
+                            "http://127.0.0.1:5173"
                     ));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
@@ -43,8 +45,8 @@ public class SecurityConfig {
 
                 // 3. Define explicit endpoint access permissions
                 .authorizeHttpRequests(auth -> auth
-                        // 🔑 Added "/ws/**" to perfectly match your frontend endpoint destination path!
-                        .requestMatchers("/auth/**", "/room/create", "/ws/**", "/ws-binge/**", "/error").permitAll()
+                        // 🔑 Permitted both "/auth/**" and "/api/auth/**" alongside room creation and websockets!
+                        .requestMatchers("/auth/**", "/api/auth/**", "/room/create", "/ws/**", "/ws-binge/**", "/error").permitAll()
                         // Any other private operational data endpoint will strictly require token authorization verification
                         .anyRequest().authenticated()
                 )
