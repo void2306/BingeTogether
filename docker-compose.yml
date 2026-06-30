@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "80:8080"
+    environment:
+      # AWS RDS PostgreSQL Configuration
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://bingetogether.cmb6cm6gm086.us-east-1.rds.amazonaws.com:5432/bingeTogether?ssl=true&sslmode=require
+      - SPRING_DATASOURCE_USERNAME=Sakshi
+      - SPRING_DATASOURCE_PASSWORD=voidSakshi54
