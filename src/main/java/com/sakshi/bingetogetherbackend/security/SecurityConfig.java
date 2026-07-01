@@ -27,7 +27,7 @@ public class SecurityConfig {
                 // 2. Enable clean cross-origin resource sharing properties matching your front-end ports
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    // 🌐 Added production Vercel deployment URL along with local ports to pass browser checks!
+                    // 🌐 Production Vercel deployment URL along with local ports to pass browser checks
                     config.setAllowedOrigins(List.of(
                             "https://bingetogether.vercel.app",
                             "http://localhost:5173",
@@ -45,8 +45,16 @@ public class SecurityConfig {
 
                 // 3. Define explicit endpoint access permissions
                 .authorizeHttpRequests(auth -> auth
-                        // 🔑 Permitted both "/auth/**" and "/api/auth/**" alongside room creation and websockets!
-                        .requestMatchers("/auth/**", "/api/auth/**", "/room/create", "/ws/**", "/ws-binge/**", "/error").permitAll()
+                        // 🔑 Fixed plural endpoint typo: explicitly added both "/room/create" AND "/rooms/create"
+                        .requestMatchers(
+                                "/auth/**",
+                                "/api/auth/**",
+                                "/room/create",
+                                "/rooms/create",
+                                "/ws/**",
+                                "/ws-binge/**",
+                                "/error"
+                        ).permitAll()
                         // Any other private operational data endpoint will strictly require token authorization verification
                         .anyRequest().authenticated()
                 )
