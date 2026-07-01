@@ -28,9 +28,10 @@ public class RoomController {
     // ==========================================
 
     /**
-     * Matches: POST http://localhost:8080/room/create
+     * 🔑 FIXED: Handles both singular and plural mapping from Frontend routing path!
+     * Matches: POST http://localhost:8080/room/create OR http://localhost:8080/rooms/create
      */
-    @PostMapping("/room/create")
+    @PostMapping(value = {"/room/create", "/rooms/create"})
     public ResponseEntity<Room> createRoom(@RequestBody CreateRoomRequest request) {
         System.out.println("[API] Creating room space for user ID: " + request.getUserId());
         Room savedRoom = roomService.createRoom(request);
