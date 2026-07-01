@@ -45,12 +45,13 @@ public class SecurityConfig {
 
                 // 3. Define explicit endpoint access permissions
                 .authorizeHttpRequests(auth -> auth
-                        // 🔑 Fixed plural endpoint typo: explicitly added both "/room/create" AND "/rooms/create"
+                        // 🔑 Permitted dynamic paths using wildcards (/**) to unblock members list, joining, and chat calls
                         .requestMatchers(
                                 "/auth/**",
                                 "/api/auth/**",
-                                "/room/create",
-                                "/rooms/create",
+                                "/room/**",
+                                "/rooms/**",
+                                "/chat/**",
                                 "/ws/**",
                                 "/ws-binge/**",
                                 "/error"
