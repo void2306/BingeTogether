@@ -27,9 +27,10 @@ public class SecurityConfig {
                 // 2. Enable clean cross-origin resource sharing properties matching your front-end ports
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    // 🌐 Production Vercel deployment URL along with local ports to pass browser checks
+                    // 🌐 Production Vercel deployment URLs along with local ports to pass browser checks
                     config.setAllowedOrigins(List.of(
                             "https://bingetogether.vercel.app",
+                            "https://bingetogether-bxintnbmf-void0623.vercel.app",
                             "http://localhost:5173",
                             "http://localhost:5174",
                             "http://localhost:5175",
@@ -39,6 +40,7 @@ public class SecurityConfig {
                     ));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
+                    config.setExposedHeaders(List.of("Authorization", "ngrok-skip-browser-warning"));
                     config.setAllowCredentials(true);
                     return config;
                 }))
