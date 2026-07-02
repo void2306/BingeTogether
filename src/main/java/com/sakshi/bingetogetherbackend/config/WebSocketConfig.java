@@ -18,12 +18,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // 🔑 Since allowedOrigins matches credentials policy, this pairs perfectly with the CorsFilter!
-        registry.addEndpoint("/ws-binge")
-                .setAllowedOrigins("https://bingetogether.vercel.app")
-                .withSockJS();
-
+        // 🚀 Native WebSocket route mapping directly allowing custom browser headers
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("https://bingetogether.vercel.app");
+                .setAllowedOriginPatterns("*");
     }
 }
