@@ -12,16 +12,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        // Destination prefix for outgoing messages from server to clients
         config.enableSimpleBroker("/topic");
-
-        // Destination prefix for inbound messages traveling from clients to @MessageMapping controllers
         config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // 🚀 Specifying explicit origin instead of wildcard pattern to force SockJS validation bypass
+        // 🔑 Since allowedOrigins matches credentials policy, this pairs perfectly with the CorsFilter!
         registry.addEndpoint("/ws-binge")
                 .setAllowedOrigins("https://bingetogether.vercel.app")
                 .withSockJS();
