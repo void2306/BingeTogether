@@ -21,9 +21,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // This handles both paths perfectly!
-        registry.addEndpoint("/ws-binge", "/ws")
-                .setAllowedOriginPatterns("*")
+        // 🚀 Specifying explicit origin instead of wildcard pattern to force SockJS validation bypass
+        registry.addEndpoint("/ws-binge")
+                .setAllowedOrigins("https://bingetogether.vercel.app")
                 .withSockJS();
+
+        registry.addEndpoint("/ws")
+                .setAllowedOrigins("https://bingetogether.vercel.app");
     }
 }
