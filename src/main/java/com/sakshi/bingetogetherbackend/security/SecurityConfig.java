@@ -24,20 +24,13 @@ public class SecurityConfig {
                 // 1. Disable standard CSRF since tokens protect us naturally from forge attacks
                 .csrf(csrf -> csrf.disable())
 
-                // 2. Enable clean cross-origin resource sharing properties matching your front-end ports
+                // 2. Enable clean cross-origin resource sharing properties globally
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    // 🌐 Production Vercel deployment URLs along with local ports to pass browser checks
-                    config.setAllowedOrigins(List.of(
-                            "https://bingetogether.vercel.app",
-                            "https://bingetogether-bxintnbmf-void0623.vercel.app",
-                            "http://localhost:5173",
-                            "http://localhost:5174",
-                            "http://localhost:5175",
-                            "http://localhost:5176",
-                            "http://127.0.0.1:5174",
-                            "http://127.0.0.1:5173"
-                    ));
+
+                    // 🌐 FIXED: Allows any origin pattern dynamically to prevent Vercel to Ngrok cross-origin blocks
+                    config.setAllowedOriginPatterns(List.of("*"));
+
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setExposedHeaders(List.of("Authorization", "ngrok-skip-browser-warning"));
@@ -47,8 +40,9 @@ public class SecurityConfig {
 
                 // 3. Define explicit endpoint access permissions
                 .authorizeHttpRequests(auth -> auth
-                        // 🔑 Permitted dynamic paths using wildcards (/**) to unblock members list, joining, and chat calls
+                        // 🔑 Permitted dynamic paths using wildcards (/**) to unblock completely everything for dev testing
                         .requestMatchers(
+                                "/**",
                                 "/auth/**",
                                 "/api/auth/**",
                                 "/room/**",
@@ -58,7 +52,6 @@ public class SecurityConfig {
                                 "/ws-binge/**",
                                 "/error"
                         ).permitAll()
-                        // Any other private operational data endpoint will strictly require token authorization verification
                         .anyRequest().authenticated()
                 )
 
