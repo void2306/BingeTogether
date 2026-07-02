@@ -18,8 +18,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // 🚀 Native WebSocket route mapping directly allowing custom browser headers
-        registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*");
+        registry.addEndpoint("/ws-binge")
+                .setAllowedOrigins(
+                        "https://bingetogether.vercel.app",
+                        "https://bingetogether-bxintnbmf-void0623.vercel.app",
+                        "http://localhost:5173"
+                )
+                .withSockJS();
     }
 }
