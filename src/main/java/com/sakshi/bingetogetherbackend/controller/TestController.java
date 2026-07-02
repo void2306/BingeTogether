@@ -6,7 +6,7 @@ import com.sakshi.bingetogetherbackend.model.User;
 import com.sakshi.bingetogetherbackend.service.UserService;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class TestController {
 
     private final UserService userService;

@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class RoomController {
 
     private final RoomService roomService;
