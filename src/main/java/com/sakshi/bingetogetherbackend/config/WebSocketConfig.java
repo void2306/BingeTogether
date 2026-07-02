@@ -19,11 +19,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-binge")
-                .setAllowedOrigins(
-                        "https://bingetogether.vercel.app",
-                        "https://bingetogether-bxintnbmf-void0623.vercel.app",
-                        "http://localhost:5173"
-                )
-                .withSockJS();
+                .setAllowedOriginPatterns("*") // 🎯 Bypasses all CORS issues completely
+                .withSockJS(); // ⚡ Pairs perfectly with our frontend factory wrapper now!
     }
 }
