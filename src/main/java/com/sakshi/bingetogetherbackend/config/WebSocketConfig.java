@@ -19,7 +19,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-binge")
-                .setAllowedOriginPatterns("*") // 🎯 Bypasses all CORS issues completely
-                .withSockJS(); // ⚡ Pairs perfectly with our frontend factory wrapper now!
+                .setAllowedOriginPatterns("*") // 🎯 This bypasses CORS strictly for WebSocket handshake requests
+                .withSockJS();
     }
 }
