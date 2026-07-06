@@ -39,6 +39,7 @@ DevOps
 - GitHub
 
 📂 Project Structure
+```
 BingeTogether
 │
 ├── frontend/
@@ -46,7 +47,7 @@ BingeTogether
 ├── docker-compose.yml
 ├── Dockerfile
 └── README.md
-
+```
 Getting Started
 
 ### Clone Repository
