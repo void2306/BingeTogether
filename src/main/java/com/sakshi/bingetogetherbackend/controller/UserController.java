@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth") // 🚨 Public prefix mapping gate matching SecurityConfig
-//@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*")
 public class UserController {
 
     // 🌟 Thread-safe, immutable field configurations
