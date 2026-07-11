@@ -28,8 +28,11 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
 
-                    // 🌐 FIXED: Allows any origin pattern dynamically to prevent Vercel to Ngrok cross-origin blocks
-                    config.setAllowedOriginPatterns(List.of("*"));
+                    // 🌐 FIXED: Explicitly listing allowed origins instead of wildcard pattern to satisfy allowCredentials(true)
+                    config.setAllowedOrigins(List.of(
+                            "http://localhost:5173",
+                            "http://localhost:3000"
+                    ));
 
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
