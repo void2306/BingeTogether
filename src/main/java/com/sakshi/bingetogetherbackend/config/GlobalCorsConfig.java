@@ -13,14 +13,8 @@ public class GlobalCorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        // 🌐 FIXED: Added localhost:5173 along with your production domains to stop MVC blocks
-                        .allowedOrigins(
-                                "http://localhost:5173",
-                                "http://localhost:3000",
-                                "https://bingetogether.vercel.app",
-                                "https://mortuary-panda-panning.ngrok-free.dev"
-                        )
+                registry.addMapping("/**") // 🌐 Allows all endpoints (auth, rooms, etc.)
+                        .allowedOrigins("https://bingetogether.vercel.app") // 🚀 Your Vercel domain
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
