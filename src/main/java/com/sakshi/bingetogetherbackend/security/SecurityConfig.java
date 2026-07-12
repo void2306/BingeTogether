@@ -6,8 +6,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration       // 🔥 TELLS SPRING TO LOAD THIS FILE
-@EnableWebSecurity  // 🔥 ACTIVATES THE CUSTOM SECURITY FILTERS
+//@Configuration       // 🔥 TELLS SPRING TO LOAD THIS FILE
+//@EnableWebSecurity  // 🔥 ACTIVATES THE CUSTOM SECURITY FILTERS
 public class SecurityConfig {
 
     @Bean
