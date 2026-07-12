@@ -3,7 +3,7 @@ package com.sakshi.bingetogetherbackend.controller;
 import com.sakshi.bingetogetherbackend.dto.LoginRequest;
 import com.sakshi.bingetogetherbackend.model.User;
 import com.sakshi.bingetogetherbackend.service.UserService;
-import com.sakshi.bingetogetherbackend.security.JwtUtils; // 🔥 Clear path reference to your token engine
+import com.sakshi.bingetogetherbackend.security.JwtUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,25 +12,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth") // 🚨 Public prefix mapping gate matching SecurityConfig
-//@CrossOrigin(origins = "*")
+@RequestMapping("/auth")
 public class UserController {
 
-    // 🌟 Thread-safe, immutable field configurations
     private final UserService userService;
     private final JwtUtils jwtUtils;
 
-    // 🌟 Unified constructor injection pattern for clean application architecture
     public UserController(UserService userService, JwtUtils jwtUtils) {
         this.userService = userService;
         this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody User user) {
+    public ResponseEntity<?> signup(@RequestBody User user) {
         System.out.println("SIGNUP API HIT FOR: " + user.getEmail());
-        User savedUser = userService.saveUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        try {
+            User savedUser = userService.saveUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        } catch (Exception e) {
+            e.printStackTrace(); // 🔥 Railway logs mein exact error message print karega
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Signup failed internal logic");
+            errorResponse.put("details", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @PostMapping("/login")
@@ -45,10 +50,8 @@ public class UserController {
                     .body("{\"error\": \"Invalid email or password. Access Denied.\"}");
         }
 
-        // 🔥 GENERATE THE SECURITY WRISTBAND: Create a cryptographically signed token string
         String token = jwtUtils.generateToken(user.getUsername());
 
-        // 🔥 BUNDLE RESPONSES: Put the user object and the token together inside a map package
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("user", user);
         responseBody.put("token", token);
