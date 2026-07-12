@@ -13,6 +13,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+// 🌐 FIXED CORS: Allows your specific Vercel production frontend domain to communicate securely
+@CrossOrigin(origins = "https://bingetogether.vercel.app")
 public class UserController {
 
     private final UserService userService;
@@ -30,7 +32,7 @@ public class UserController {
             User savedUser = userService.saveUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
         } catch (Exception e) {
-            e.printStackTrace(); // 🔥 Railway logs mein exact error message print karega
+            e.printStackTrace();
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Signup failed internal logic");
             errorResponse.put("details", e.getMessage());
