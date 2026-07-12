@@ -20,17 +20,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 1. Explicitly enable CORS configuration within Security
+                // 1. Completely disable CSRF checks so POST requests are never dropped with 403
+                .csrf(csrf -> csrf.disable())
+
+                // 2. Clear out session requirements to avoid implicit authorization states
+                .sessionManagement(session -> session.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
+
+                // 3. Explicitly intercept CORS handshakes inside the security filter pipeline
                 .cors(cors -> cors.configurationSource(request -> {
                     var config = new org.springframework.web.cors.CorsConfiguration();
-                    config.setAllowedOrigins(java.util.List.of("*"));
+                    config.setAllowedOrigins(java.util.List.of("https://bingetogether.vercel.app"));
                     config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(java.util.List.of("*"));
+                    config.setAllowCredentials(true);
                     return config;
                 }))
-                // 2. Disable CSRF so POST requests work from external clients
-                .csrf(csrf -> csrf.disable())
-                // 3. Guarantee that the auth endpoints are completely public
+
+                // 4. Match the endpoints exactly and unlock them permanently
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
