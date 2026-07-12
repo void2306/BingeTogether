@@ -13,8 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-// 🌐 FIXED CORS: Allows your specific Vercel production frontend domain to communicate securely
-@CrossOrigin(origins = "https://bingetogether.vercel.app")
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class UserController {
 
     private final UserService userService;
