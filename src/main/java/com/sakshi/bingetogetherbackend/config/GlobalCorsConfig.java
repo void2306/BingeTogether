@@ -14,7 +14,13 @@ public class GlobalCorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://bingetogether.vercel.app", "https://mortuary-panda-panning.ngrok-free.dev")
+                        // 🌐 FIXED: Added localhost:5173 along with your production domains to stop MVC blocks
+                        .allowedOrigins(
+                                "http://localhost:5173",
+                                "http://localhost:3000",
+                                "https://bingetogether.vercel.app",
+                                "https://mortuary-panda-panning.ngrok-free.dev"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
