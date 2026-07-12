@@ -19,7 +19,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-binge")
-                .setAllowedOriginPatterns("*") // 🎯 This bypasses CORS strictly for WebSocket handshake requests
+                // 🌐 FIXED: Explicit patterns including localhost and production domains
+                .setAllowedOriginPatterns(
+                        "http://localhost:5173",
+                        "http://localhost:3000",
+                        "https://bingetogether.vercel.app",
+                        "https://mortuary-panda-panning.ngrok-free.dev"
+                )
                 .withSockJS();
     }
 }
