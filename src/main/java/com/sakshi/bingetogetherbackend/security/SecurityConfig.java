@@ -17,53 +17,26 @@ public class SecurityConfig {
 
     @Autowired
     private JwtFilter jwtFilter;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 1. Disable standard CSRF since tokens protect us naturally from forge attacks
-                .csrf(csrf -> csrf.disable())
-
-                // 2. Enable clean cross-origin resource sharing properties globally
+                // 1. Explicitly enable CORS configuration within Security
                 .cors(cors -> cors.configurationSource(request -> {
-                    CorsConfiguration config = new CorsConfiguration();
-
-                    // 🌐 FIXED: Explicitly listing allowed origins instead of wildcard pattern to satisfy allowCredentials(true)
-                    config.setAllowedOrigins(List.of(
-                            "http://localhost:5173",
-                            "http://localhost:3000"
-                    ));
-
-                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    config.setAllowedHeaders(List.of("*"));
-                    config.setExposedHeaders(List.of("Authorization", "ngrok-skip-browser-warning"));
-                    config.setAllowCredentials(true);
+                    var config = new org.springframework.web.cors.CorsConfiguration();
+                    config.setAllowedOrigins(java.util.List.of("*"));
+                    config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    config.setAllowedHeaders(java.util.List.of("*"));
                     return config;
                 }))
-
-                // 3. Define explicit endpoint access permissions
+                // 2. Disable CSRF so POST requests work from external clients
+                .csrf(csrf -> csrf.disable())
+                // 3. Guarantee that the auth endpoints are completely public
                 .authorizeHttpRequests(auth -> auth
-                        // 🔑 Permitted dynamic paths using wildcards (/**) to unblock completely everything for dev testing
-                        .requestMatchers(
-                                "/**",
-                                "/auth/**",
-                                "/api/auth/**",
-                                "/room/**",
-                                "/rooms/**",
-                                "/chat/**",
-                                "/ws/**",
-                                "/ws-binge/**",
-                                "/error"
-                        ).permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
-                )
-
-                // 4. Force stateless sessions. Don't create server session database logs!
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // 5. Wire up our custom JWT verification guard scanner right before the main authentication engine
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                );
 
         return http.build();
     }
-}
+
+   }
