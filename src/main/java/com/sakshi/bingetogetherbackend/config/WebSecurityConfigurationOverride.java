@@ -18,14 +18,15 @@ public class WebSecurityConfigurationOverride {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("https://bingetogether.vercel.app"));
+                    // 🔐 Fixes the exact "allowCredentials vs *" crash:
+                    config.setAllowedOriginPatterns(List.of("https://*.vercel.app", "https://bingetogether.vercel.app"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setAllowCredentials(true);
                     return config;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // 🔓 FORCES AN ABSOLUTE SYSTEM BYPASS FOR ALL ENDPOINTS TO STRIP THE 403 COMPLETELY
+                        .anyRequest().permitAll()
                 );
 
         return http.build();
