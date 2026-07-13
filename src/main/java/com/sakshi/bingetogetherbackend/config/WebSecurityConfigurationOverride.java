@@ -18,10 +18,11 @@ public class WebSecurityConfigurationOverride {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    // 🔐 Fixes the exact "allowCredentials vs *" crash:
-                    config.setAllowedOriginPatterns(List.of("https://*.vercel.app", "https://bingetogether.vercel.app"));
+                    // 🔒 Explicitly allow your exact production frontend domain directly
+                    config.setAllowedOrigins(List.of("https://bingetogether.vercel.app"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    config.setAllowedHeaders(List.of("*"));
+                    // 🔒 Explicitly pass standard headers instead of wildcards to bypass the exception
+                    config.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
                     config.setAllowCredentials(true);
                     return config;
                 }))
