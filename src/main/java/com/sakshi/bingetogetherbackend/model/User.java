@@ -1,14 +1,13 @@
-
 package com.sakshi.bingetogetherbackend.model;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table; // 🔑 Imported for table mapping
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "users") // 🔥 Bypasses the PostgreSQL 'user' reserved keyword syntax error!
+@Table(name = "users")
 public class User {
 
     @Id
@@ -19,11 +18,18 @@ public class User {
     private String email;
     private String password;
 
-    // Default constructor required by Hibernate
+    // 1. Default constructor required by Hibernate
     public User() {
     }
 
-    // Parameterized constructor
+    // 2. Clear Constructor WITHOUT ID (Crucial for handling JSON registration requests!)
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+
+    // 3. Full Parameterized constructor
     public User(Long id, String username, String email, String password) {
         this.id = id;
         this.username = username;
