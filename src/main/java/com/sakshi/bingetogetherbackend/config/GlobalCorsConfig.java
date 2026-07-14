@@ -1,24 +1,5 @@
 package com.sakshi.bingetogetherbackend.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-@Configuration
+// 🚫 Disabled by Sakshi to prevent duplicate CORS filter bean collision errors!
 public class GlobalCorsConfig {
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // 🌐 Allows all endpoints (auth, rooms, etc.)
-                        .allowedOrigins("https://bingetogether.vercel.app") // 🚀 Your Vercel domain
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
-            }
-        };
-    }
 }
