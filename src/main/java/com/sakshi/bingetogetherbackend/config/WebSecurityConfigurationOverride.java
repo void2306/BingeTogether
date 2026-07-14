@@ -20,7 +20,8 @@ public class WebSecurityConfigurationOverride {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(List.of("https://bingetogether.vercel.app"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    config.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+                    // 🔓 Explicitly whitelist standard headers AND the custom browser-warning bypass header
+                    config.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "ngrok-skip-browser-warning"));
                     config.setAllowCredentials(true);
                     return config;
                 }))
