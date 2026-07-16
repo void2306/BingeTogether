@@ -29,7 +29,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        // 🔓 Public endpoint paths
                         .requestMatchers("/auth/**").permitAll()
+
+                        // 🔌 🚀 CRITICAL: Whitelist WebSocket raw endpoint paths for SockJS transport mappings
+                        .requestMatchers("/ws-binge/**", "/ws-binge", "/topic/**", "/app/**").permitAll()
+
+                        // 🔒 Everything else remains strictly protected by your JWT setup
                         .anyRequest().authenticated()
                 );
 
@@ -41,9 +47,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
+        // Allow connections from both local server nodes and live cloud client targets
         config.setAllowedOrigins(List.of("http://localhost:5173", "https://bingetogether.vercel.app"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        // 🔓 Clean merged allowed headers including your custom bypass strings
         config.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "ngrok-skip-browser-warning"));
         config.setAllowCredentials(true);
 
