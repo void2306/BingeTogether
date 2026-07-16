@@ -17,6 +17,9 @@ public class User {
     private String username;
     private String email;
     private String password;
+    private String provider; // "GOOGLE" ya "LOCAL"
+    private String providerId; // Google ki unique user numeric ID
+    private String avatarUrl; // User ki Google profile picture link
 
     // 1. Default constructor required by Hibernate
     public User() {
@@ -37,7 +40,16 @@ public class User {
         this.password = password;
     }
 
-    // Getters and Setters
+    // 4. Extended Constructor explicitly optimized for OAuth registration loops
+    public User(String username, String email, String provider, String providerId, String avatarUrl) {
+        this.username = username;
+        this.email = email;
+        this.provider = provider;
+        this.providerId = providerId;
+        this.avatarUrl = avatarUrl;
+    }
+
+    // --- STANDARD GETTERS AND SETTERS ---
     public Long getId() {
         return id;
     }
@@ -68,5 +80,30 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    // --- OAUTH EXTENDED GETTERS AND SETTERS ---
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

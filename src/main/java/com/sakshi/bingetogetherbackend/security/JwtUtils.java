@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -11,38 +12,39 @@ import java.util.Date;
 @Component
 public class JwtUtils {
 
-    private final String jwtSecret;
-    private final int jwtExpirationMs = 86400000; // 24 Hours validity lifespan window
-    private final Key signingKey;
+    @Value("${jwt.secret}")
+    private String jwtSecret;
 
-    // Injecting the stable property string via the constructor safely
-    public JwtUtils(@Value("${jwt.secret}") String jwtSecret) {
-        this.jwtSecret = jwtSecret;
-        // Convert your application.properties string cleanly into a valid cryptokey
+    private final int jwtExpirationMs = 86400000; // 24 Hours
+    private Key signingKey;
+
+    // This lifecycle hook executes immediately after properties are injected, breaking the dependency loop
+    @PostConstruct
+    public void init() {
         this.signingKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    // Generates a token using the user's username identity
-    public String generateToken(String username) {
+    // Generates a token using the user's primary email identity
+    public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(signingKey) // 🔥 Uses your permanent properties key now!
+                .signWith(signingKey)
                 .compact();
     }
 
-    // Extracts the username text back out from an active token string
-    public String getUsernameFromToken(String token) {
+    // Extracts the user email identity text context out from active signatures
+    public String getEmailFromToken(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(signingKey) // 🔥 Validates against the permanent key
+                .setSigningKey(signingKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
-    // Cryptographically verify the token handle validity
+    // Cryptographically verify if token parameters have been tampered with
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(signingKey).build().parseClaimsJws(token);

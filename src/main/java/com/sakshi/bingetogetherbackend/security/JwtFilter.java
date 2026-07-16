@@ -29,11 +29,12 @@ public class JwtFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7); // Strip away the word "Bearer " to get the raw token string
 
             if (jwtUtils.validateToken(token)) {
-                String username = jwtUtils.getUsernameFromToken(token);
+                // 🔥 Updated from getUsernameFromToken to getEmailFromToken to match identity alignment updates
+                String email = jwtUtils.getEmailFromToken(token);
 
-                // Authorize and log the user into Spring Security's active validation context
+                // Authorize and log the user into Spring Security's active validation context using email identity
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+                        new UsernamePasswordAuthenticationToken(email, null, new ArrayList<>());
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
