@@ -4,7 +4,7 @@ public class SendMessageRequest {
 
     private Long roomId;
     private Long userId;
-    private String senderName;
+    private String username;
     private String message;
 
     public Long getRoomId() {
@@ -23,12 +23,12 @@ public class SendMessageRequest {
         this.userId = userId;
     }
 
-    public String getSenderName() {
-        return senderName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getMessage() {

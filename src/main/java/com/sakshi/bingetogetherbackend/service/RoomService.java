@@ -145,13 +145,13 @@ public class RoomService {
         chatMessage.setUserId(request.getUserId());
         chatMessage.setMessage(request.getMessage());
 
-        if (request.getSenderName() != null && !request.getSenderName().trim().isEmpty()) {
-            chatMessage.setSenderName(request.getSenderName().trim());
+        if (request.getUsername() != null && !request.getUsername().trim().isEmpty()) {
+            chatMessage.setUsername(request.getUsername().trim());
         } else if (request.getUserId() != null) {
             User user = userRepository.findById(request.getUserId()).orElse(null);
-            chatMessage.setSenderName(user != null ? user.getUsername() : "User");
+            chatMessage.setUsername(user != null ? user.getUsername() : "User");
         } else {
-            chatMessage.setSenderName("User");
+            chatMessage.setUsername("User");
         }
 
         chatMessageRepository.save(chatMessage);

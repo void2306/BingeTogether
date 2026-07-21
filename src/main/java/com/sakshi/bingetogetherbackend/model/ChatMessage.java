@@ -18,7 +18,7 @@ public class ChatMessage {
 
     private Long userId;
 
-    private String senderName;
+    private String username;
 
     private String message;
 
@@ -27,12 +27,12 @@ public class ChatMessage {
     public ChatMessage() {
     }
 
-    public ChatMessage(Long id, Long roomId, Long userId, String senderName,
+    public ChatMessage(Long id, Long roomId, Long userId, String username,
                        String message, LocalDateTime timestamp) {
         this.id = id;
         this.roomId = roomId;
         this.userId = userId;
-        this.senderName = senderName;
+        this.username = username;
         this.message = message;
         this.timestamp = timestamp;
     }
@@ -61,12 +61,12 @@ public class ChatMessage {
         this.userId = userId;
     }
 
-    public String getSenderName() {
-        return senderName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getMessage() {
