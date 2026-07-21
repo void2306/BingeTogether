@@ -18,6 +18,8 @@ public class ChatMessage {
 
     private Long userId;
 
+    private String senderName;
+
     private String message;
 
     private LocalDateTime timestamp = LocalDateTime.now();
@@ -25,11 +27,12 @@ public class ChatMessage {
     public ChatMessage() {
     }
 
-    public ChatMessage(Long id, Long roomId, Long userId,
+    public ChatMessage(Long id, Long roomId, Long userId, String senderName,
                        String message, LocalDateTime timestamp) {
         this.id = id;
         this.roomId = roomId;
         this.userId = userId;
+        this.senderName = senderName;
         this.message = message;
         this.timestamp = timestamp;
     }
@@ -56,6 +59,14 @@ public class ChatMessage {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
     }
 
     public String getMessage() {

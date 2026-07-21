@@ -8,9 +8,11 @@ import com.sakshi.bingetogetherbackend.model.ChatMessage;
 import com.sakshi.bingetogetherbackend.model.Room;
 import com.sakshi.bingetogetherbackend.model.RoomMember;
 import com.sakshi.bingetogetherbackend.model.RoomMemberId;
+import com.sakshi.bingetogetherbackend.model.User;
 import com.sakshi.bingetogetherbackend.repository.ChatMessageRepository;
 import com.sakshi.bingetogetherbackend.repository.RoomMemberRepository;
 import com.sakshi.bingetogetherbackend.repository.RoomRepository;
+import com.sakshi.bingetogetherbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -21,13 +23,16 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomMemberRepository roomMemberRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final UserRepository userRepository;
 
     public RoomService(RoomRepository roomRepository,
                        RoomMemberRepository roomMemberRepository,
-                       ChatMessageRepository chatMessageRepository) {
+                       ChatMessageRepository chatMessageRepository,
+                       UserRepository userRepository) {
         this.roomRepository = roomRepository;
         this.roomMemberRepository = roomMemberRepository;
         this.chatMessageRepository = chatMessageRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -39,7 +44,6 @@ public class RoomService {
         System.out.println("USER ID = " + request.getUserId());
         System.out.println("================================");
 
-        // 1. Defend against malformed session IDs slipping through
         if (request.getUserId() == null || request.getUserId() == 0) {
             throw new IllegalArgumentException("Cannot create a room with an empty or invalid user ID.");
         }
@@ -65,12 +69,7 @@ public class RoomService {
         RoomMember host = new RoomMember();
         host.setId(memberId);
         host.setRole("HOST");
-
-        // 2. FIX: Ensure your entity assigns properties cleanly to satisfy database null constraints
         host.setRoom(savedRoom);
-
-        // If your RoomMember entity has a setUser mapping method, invoke it here:
-        // host.setUser(userRepository.findById(request.getUserId()).orElseThrow());
 
         roomMemberRepository.save(host);
 
@@ -95,8 +94,6 @@ public class RoomService {
         RoomMember member = new RoomMember();
         member.setId(memberId);
         member.setRole("MEMBER");
-
-        // 3. FIX: Keep object assignments consistent for direct junction references
         member.setRoom(room);
 
         roomMemberRepository.save(member);
@@ -147,6 +144,15 @@ public class RoomService {
         chatMessage.setRoomId(request.getRoomId());
         chatMessage.setUserId(request.getUserId());
         chatMessage.setMessage(request.getMessage());
+
+        if (request.getSenderName() != null && !request.getSenderName().trim().isEmpty()) {
+            chatMessage.setSenderName(request.getSenderName().trim());
+        } else if (request.getUserId() != null) {
+            User user = userRepository.findById(request.getUserId()).orElse(null);
+            chatMessage.setSenderName(user != null ? user.getUsername() : "User");
+        } else {
+            chatMessage.setSenderName("User");
+        }
 
         chatMessageRepository.save(chatMessage);
         return "Message sent successfully";
