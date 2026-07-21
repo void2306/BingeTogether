@@ -5,6 +5,8 @@ import com.sakshi.bingetogetherbackend.model.ChatMessage;
 import com.sakshi.bingetogetherbackend.model.RoomMember;
 import com.sakshi.bingetogetherbackend.model.Room;
 import com.sakshi.bingetogetherbackend.service.RoomService;
+import com.sakshi.bingetogetherbackend.service.S3Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +21,25 @@ public class RoomController {
 
     private final RoomService roomService;
 
+    @Autowired
+    private S3Service s3Service;
+
     public RoomController(RoomService roomService) {
         this.roomService = roomService;
+    }
+
+    // ==========================================
+    // S3 PRESIGNED URL ENDPOINT
+    // ==========================================
+
+    /**
+     * Matches: GET http://localhost:8080/s3/upload-url?fileName=video.mp4&contentType=video/mp4
+     */
+    @GetMapping("/s3/upload-url")
+    public ResponseEntity<Map<String, String>> getS3UploadUrl(
+            @RequestParam String fileName,
+            @RequestParam String contentType) {
+        return ResponseEntity.ok(s3Service.generatePresignedUrl(fileName, contentType));
     }
 
     // ==========================================
