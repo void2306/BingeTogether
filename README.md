@@ -63,6 +63,22 @@ The backend is built using **Spring Boot** and provides REST APIs, STOMP WebSock
          PostgreSQL         AWS S3
     (Users, Rooms, Chat)  (MP4 Videos)
 ```
+## 📂 Project Structure
+
+```
+src/
+│
+├── config/
+├── controller/
+├── dto/
+├── entity/
+├── repository/
+├── security/
+├── service/
+├── websocket/
+├── exception/
+└── BingeTogetherApplication.java
+```
 
 ## 📡 Backend Responsibilities
 The backend is responsible for:
@@ -85,22 +101,6 @@ The backend is responsible for:
 - Member Join/Leave Updates
 - Low-latency Event Broadcasting
 
-## 📂 Project Structure
-
-```text
-src/
-│
-├── config/
-├── controller/
-├── dto/
-├── entity/
-├── repository/
-├── security/
-├── service/
-├── websocket/
-├── exception/
-└── BingeTogetherApplication.java
-```
 ## 🚧 Challenges Faced
 Building a real-time synchronized watch party required solving several engineering challenges:
 - Synchronizing video playback between multiple users with minimal latency.
