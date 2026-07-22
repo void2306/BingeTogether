@@ -201,7 +201,6 @@ B.Tech Computer Science Engineering
 🌐 **GitHub:** [@void2306](https://github.com/void2306)
 💼 **LinkedIn:** [Sakshi Kumari](https://www.linkedin.com/in/sakshi-kumari-374bb9330/)
 
-
+## ⭐ Support
 If you found this project interesting, consider giving the repository a ⭐.
-
 Feedback and contributions are always welcome!
