@@ -35,7 +35,10 @@ public class SecurityConfig {
                         // 🔌 2. WebSocket mappings (Handshake & Broker channels)
                         .requestMatchers("/ws-binge/**", "/ws-binge", "/topic/**", "/app/**").permitAll()
 
-                        // 🎬 3. FIXED: Allow Room and Chat endpoint paths cleanly without 403 blocks!
+                        // 🤖 3. BingeBot AI Endpoint (Bypasses 403 blocks for testing)
+                        .requestMatchers("/api/v1/bot/**").permitAll()
+
+                        // 🎬 4. Room, Chat, and User endpoints
                         .requestMatchers("/room/**", "/rooms/**", "/chat/**", "/user/**").permitAll()
 
                         // 🔒 Everything else remains strictly protected
