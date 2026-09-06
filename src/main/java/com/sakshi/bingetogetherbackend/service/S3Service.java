@@ -20,7 +20,7 @@ import java.util.UUID;
 @Service
 public class S3Service {
 
-    @Value("${aws.s3.bucket.name}")
+    @Value("${aws.s3.bucket.name:bingetogether-bucket}")
     private String bucketName;
 
     @Value("${aws.access.key.id}")
@@ -29,11 +29,14 @@ public class S3Service {
     @Value("${aws.secret.access.key}")
     private String secretKey;
 
-    @Value("${aws.s3.region}")
+    @Value("${aws.s3.region:auto}")
     private String region;
 
-    @Value("${aws.s3.endpoint:https://syiellyvljglueclbzor.storage.supabase.co/storage/v1/s3}")
+    @Value("${aws.s3.endpoint}")
     private String endpoint;
+
+    @Value("${aws.s3.public.url:https://pub-665fdebcd34e4dfc99be0d29f193efb0.r2.dev}")
+    private String publicBaseUrl;
 
     public Map<String, String> generatePresignedUrl(String fileName, String contentType) {
         String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
@@ -43,7 +46,7 @@ public class S3Service {
                 .build();
 
         S3Presigner.Builder presignerBuilder = S3Presigner.builder()
-                .region(Region.of(region))
+                .region(Region.of("auto"))
                 .serviceConfiguration(serviceConfiguration)
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(accessKey, secretKey)
@@ -61,7 +64,7 @@ public class S3Service {
                     .build();
 
             PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                    .signatureDuration(Duration.ofMinutes(20))
+                    .signatureDuration(Duration.ofMinutes(30))
                     .putObjectRequest(objectRequest)
                     .build();
 
@@ -69,8 +72,13 @@ public class S3Service {
 
             String uploadUrl = presignedRequest.url().toString();
 
-            // Supabase direct CDN public URL for streaming
-            String fileUrl = "https://syiellyvljglueclbzor.supabase.co/storage/v1/object/public/" + bucketName + "/" + uniqueFileName;
+            // Cloudflare R2 URL force karein
+            String base = "https://pub-665fdebcd34e4dfc99be0d29f193efb0.r2.dev";
+            if (publicBaseUrl != null && !publicBaseUrl.isBlank() && !publicBaseUrl.contains("supabase")) {
+                base = publicBaseUrl;
+            }
+
+            String fileUrl = (base.endsWith("/") ? base : base + "/") + uniqueFileName;
 
             Map<String, String> response = new HashMap<>();
             response.put("uploadUrl", uploadUrl);
