@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
@@ -37,8 +38,13 @@ public class S3Service {
     public Map<String, String> generatePresignedUrl(String fileName, String contentType) {
         String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
 
+        S3Configuration serviceConfiguration = S3Configuration.builder()
+                .pathStyleAccessEnabled(true)
+                .build();
+
         S3Presigner.Builder presignerBuilder = S3Presigner.builder()
                 .region(Region.of(region))
+                .serviceConfiguration(serviceConfiguration)
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(accessKey, secretKey)
                 ));
@@ -63,7 +69,7 @@ public class S3Service {
 
             String uploadUrl = presignedRequest.url().toString();
 
-            // Supabase public storage CDN URL
+            // Supabase direct CDN public URL for streaming
             String fileUrl = "https://syiellyvljglueclbzor.supabase.co/storage/v1/object/public/" + bucketName + "/" + uniqueFileName;
 
             Map<String, String> response = new HashMap<>();
