@@ -1,33 +1,33 @@
 package com.sakshi.bingetogetherbackend.controller;
 
-import com.sakshi.bingetogetherbackend.dto.SyncMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Controller
-//@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class SyncController {
 
-    /**
-     * Handles live real-time synchronization updates (scrubbing, play, pause states)
-     * Inbound Destination App Endpoint: /app/room/{roomCode}/sync
-     * Outbound Topic Streaming Channel: /topic/room/{roomCode}/stream
-     */
-    @MessageMapping("/room/{roomCode}/sync")
-    @SendTo("/topic/room/{roomCode}/stream")
-    public SyncMessage handleVideoSync(
-            @DestinationVariable String roomCode,
-            SyncMessage syncMessage) {
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
-        System.out.println("[WS-SYNC] Room: " + roomCode
-                + " | Sender: " + syncMessage.getSender()
-                + " | Action: " + syncMessage.getAction()
-                + " | TargetTime: " + syncMessage.getTargetTime());
+    // 1. Relay WebRTC Offer to the room
+    @MessageMapping("/room/{roomCode}/webrtc/offer")
+    public void handleWebRtcOffer(@DestinationVariable String roomCode, @Payload String payload) {
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/webrtc/offer", payload);
+    }
 
-        // Broadcasts the payload data instantly to everyone else listening in the room party channel
-        return syncMessage;
+    // 2. Relay WebRTC Answer to the room
+    @MessageMapping("/room/{roomCode}/webrtc/answer")
+    public void handleWebRtcAnswer(@DestinationVariable String roomCode, @Payload String payload) {
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/webrtc/answer", payload);
+    }
+
+    // 3. Relay ICE Candidates between peers
+    @MessageMapping("/room/{roomCode}/webrtc/candidate")
+    public void handleWebRtcCandidate(@DestinationVariable String roomCode, @Payload String payload) {
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/webrtc/candidate", payload);
     }
 }
