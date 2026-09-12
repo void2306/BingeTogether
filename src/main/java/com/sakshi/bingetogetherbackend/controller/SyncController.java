@@ -13,6 +13,16 @@ public class SyncController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    /**
+     * 0. Relay Media Player Synchronization, User Presence, and Independent Camera/Mic States
+     * Inbound: /app/room/{roomCode}/sync
+     * Outbound: /topic/room/{roomCode}/stream
+     */
+    @MessageMapping("/room/{roomCode}/sync")
+    public void handleVideoSync(@DestinationVariable String roomCode, @Payload String payload) {
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/stream", payload);
+    }
+
     // 1. Relay WebRTC Offer to the room
     @MessageMapping("/room/{roomCode}/webrtc/offer")
     public void handleWebRtcOffer(@DestinationVariable String roomCode, @Payload String payload) {
