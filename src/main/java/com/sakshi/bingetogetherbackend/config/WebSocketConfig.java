@@ -28,4 +28,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 )
                 .withSockJS();
     }
+
+    @Override
+    public void configureWebSocketTransport(org.springframework.web.socket.config.annotation.WebSocketTransportRegistration registration) {
+        registration.setMessageSizeLimit(512 * 1024); // 512 KB for WebRTC SDP payloads
+        registration.setSendBufferSizeLimit(1024 * 1024); // 1 MB buffer
+        registration.setSendTimeLimit(20000);
+    }
 }
